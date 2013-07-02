@@ -8,6 +8,7 @@ import types
 import json
 import webbrowser
 from xml.dom.minidom import parseString
+import urllib
 
 
 xdebug_current = None
@@ -219,7 +220,7 @@ class XdebugView(object):
             self.del_breakpoint(row)
 
     def uri(self):
-        return 'file://' + os.path.realpath(self.view.file_name())
+        return 'file://' + urllib.quote(os.path.realpath(self.view.file_name()))
 
     def lines(self, data=None):
         lines = []
@@ -656,6 +657,7 @@ def show_file(window, uri):
         transport, filename = uri.split(':///', 1)  # scheme:///C:/path/file => scheme, C:/path/file
     else:
         transport, filename = uri.split('://', 1)  # scheme:///path/file => scheme, /path/file
+    filename = urllib.unquote(filename)
     if transport == 'file' and os.path.exists(filename):
         window = sublime.active_window()
         views = window.views()
